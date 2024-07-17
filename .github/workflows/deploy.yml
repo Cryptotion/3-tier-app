@@ -32,8 +32,22 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo apt-get install -y docker-compose
           cd /home/ubuntu/3-tier-app
           git pull origin main
+          export DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
+          export DB_USER=${{ secrets.DB_USER }}
+          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          export DB_NAME=${{ secrets.DB_NAME }}
           docker-compose pull
           docker-compose up -d
         EOF
+
+env:
+  DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_NAME: ${{ secrets.DB_NAME }}
