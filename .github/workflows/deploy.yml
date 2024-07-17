@@ -33,9 +33,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           sudo apt-get update
-          sudo apt-get install -y docker.io
           sudo systemctl start docker
-          sudo apt-get install -y docker-compose
           cd /home/ubuntu/3-tier-app
           git pull origin main
           export DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
